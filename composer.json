@@ -1,0 +1,12 @@
+{
+  "name": "bturner/328/Dating0505",
+  "authors": [
+    {
+      "name": "Bruce Turner",
+      "email": "BTurner15@mail.greenriver.edu"
+    }
+  ],
+  "require": {
+    "bcosca/fatfree-core": "dev-master"
+  }
+}
