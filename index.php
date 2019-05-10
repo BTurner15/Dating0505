@@ -72,8 +72,7 @@ $f3->route('GET|POST /perinfo', function($f3) {
             $_SESSION['age'] = $_POST['age'];
             $_SESSION['gender'] = $_POST['gender'];
             $_SESSION['phone'] = $_POST['phone'];
-            $view = new Template();
-            echo $view->render('views/profile.html');
+            $f3->reroute('/profile');
         }
     }
     $view = new Template();
@@ -96,6 +95,8 @@ $f3->route('GET|POST /profile', function($f3) {
         $f3->set('seekSex', $seekSex);
         //echo "<br/>";
         //print_r($_POST);
+        echo "<br>".validEmail($f3->get('email')."<br>");
+
         if (validProfileForm()) {
 
             //Write data to Session
@@ -103,11 +104,7 @@ $f3->route('GET|POST /profile', function($f3) {
             $_SESSION['resState'] = $_POST['resState'];
             $_SESSION['seekSex'] = $_POST['seekSex'];
 
-            $view = new Template();
-            //echo "<br/>";
-            //print_r($_SESSION);
-
-            echo $view->render('views/interests.html');
+            $f3->reroute('/interests');
         }
     }
     //Display profile, which posts to interests
@@ -135,10 +132,18 @@ $f3->route('GET|POST /summary', function() {
 
     //save the data gathered in interests
     $indoor = $_POST['indoor'];
-    $_SESSION['indoor_interests'] = implode(", ", $indoor);
+    if(isset($_SESSION['indoor_interests']))
+    {
+        $_SESSION['indoor_interests'] = implode(", ", $indoor);
+    }
+
 
     $outdoor = $_POST['outdoor'];
-    $_SESSION['outdoor_interests'] = implode(", ", $outdoor);
+    if(isset($_SESSION['outdoor_interests']))
+    {
+        $_SESSION['outdoor_interests'] = implode(", ", $outdoor);
+    }
+
     //print_r($_SESSION);
 
     //Display summary, which concludes Dating II
