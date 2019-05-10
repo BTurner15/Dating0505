@@ -3,7 +3,7 @@
 <!-- IT 328 Full Stack Web Development -->
 <!-- Dating 2 Assignment -->
 <!-- file: views/profile.html -->
-<!-- date: Sunday April 21 2019 -->
+<!-- date: Thursday May 9 2019 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,22 +28,36 @@
             <h1>Profile</h1>
         </div>
     </div>
-    <form class="form-group" method="post" action="interests">
+    <form class="form-group" method="post" action="#">
         <div class="row ml-2">
             <div class="col-sm-6">
                 <strong>Email</strong><br>
                 <label class="form-control-label" >
-                    <input id="email" class="form-control" type="email" name="email" value="my_email@gmail.com">
+                    <input id="email" class="form-control" type="email" name="email" value="{{ @SESSION['email'] }}">
 
                 </label><br>
                 <strong>State</strong><br>
                 <label class="form-control-label" >
-                    <input id="resState" class="form-control" type="text" name="resState" value="WASHINGTON">
+                    <input id="resState" class="form-control" type="text" name="resState" value="{{ @SESSION['resState'] }}">
                 </label><br>
+                <!--
                 <strong>Seeking</strong><br>
                 <label><input type="radio" name="seekSex" value="male" checked>Male</label>
                 <label><input type="radio" name="seekSex" value="female">Female</label><br>
-
+                -->
+                <p><strong>Seeking</strong>
+                    <check if="{{ @errors['seekSex'] }}">
+                        <span class="err">{{ @errors['seekSex'] }}</span>
+                    </check><br>
+                    <repeat group="{{ @seekSexs }}" value="{{ @seekSexOption }}">
+                        <label><input type="radio" name="seekSex" value="{{ @seekSexOption }}"
+                            <check if="{{ @seekSexOption == @seekSex }}">
+                                checked="checked"
+                            </check>
+                            >{{ @seekSexOption }}
+                        </label><br>
+                    </repeat>
+                </p>
             </div> <!-- end row#1 col one-->
             <div class="col-sm-6">
                 <div class="container">
