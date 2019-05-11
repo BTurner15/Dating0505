@@ -3,7 +3,7 @@
 <!-- IT 328 Full Stack Web Development -->
 <!-- Dating 2 Assignment -->
 <!-- file: views/summary.html -->
-<!-- date: Sunday April 21 2019 -->
+<!-- date: Saturday May 11 2019 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -51,7 +51,7 @@
                 Seeking: {{$_SESSION['seekSex']}} <br>
                 </div>
                 <div class="container border mt-4">
-                Interests: {{$_SESSION['indoor_interests']}} {{$_SESSION['outdoor_interests']}}<br>
+                Interests: {{$_SESSION['indoor']}} {{$_SESSION['outdoor']}}<br>
                 </div>
             </div> <!-- end row#1 col one-->
             <div class="col-sm-6">
@@ -61,7 +61,7 @@
                 <br>
                 <div>
                     Biography<br><br>
-                    <textarea name="bio" id="bio" cols="50" rows="10">{{$_SESSION['biography']}}</textarea><br>
+                    <textarea name="bio" id="bio" cols="50" rows="10">{{$_SESSION['bio']}}</textarea><br>
                 </div>
                 <br>
             </div>

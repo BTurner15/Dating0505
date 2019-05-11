@@ -2,7 +2,8 @@
 /* Bruce Turner, Professor Ostrander, Spring 2019
  * IT 328 Full Stack Web Development
  * Dating IIb Assignment: with form validation & sticky forms
- * file: validation-functions.php  --> as the specification says:
+ * file: validation-functions.php
+ * date: Saturday, May 11 2019
  * "
  * validName() checks to see that a string is all alphabetic
  * validAge() checks to see that an age is numeric and between 18 and 118
@@ -11,10 +12,7 @@
  * validEmail() checks to see that an email address is valid
  * validOutdoor() checks each selected outdoor interest against a list of valid options
  * validIndoor() checks each selected indoor interest against a list of valid options
- *
- * Make name, age, phone, and email required fields. Gender, bio, and interests are optional.
  * "
- * date: Thursday, May 9 2019
 */
 
 /* Validate the personal information form
@@ -179,12 +177,31 @@ function validPerinfoForm()
             return false;
         }
     }
-    function validOutdoor()
+    function validInterestsForm()
     {
-
+        return true;
+    }
+    function validOutdoor($interest)
+    {
+        global $f3;
+        if(!in_array($interest, $f3->get('outdoorInterests')))
+        {
+            //spoof attempt. skip it
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
-    function validIndoor()
+    function validIndoor($interest)
     {
+        global $f3;
+        if (!in_array($interest, $f3->get('indoorInterests'))) {
+            //spoof attempt. skip it
+            return false;
+        } else {
+            return true;
+        }
 
     }

@@ -3,7 +3,8 @@
 <!-- IT 328 Full Stack Web Development -->
 <!-- Dating 2 Assignment -->
 <!-- file: views/profile.html -->
-<!-- date: Thursday May 9 2019 -->
+<!-- date: Friday May 10 2019 -->
+<!-- version: 2.0 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,7 +34,7 @@
             <div class="col-sm-6">
                 <strong>Email</strong><br>
                 <label class="form-control-label" >
-                    <input id="email" class="form-control" type="email" name="email" value="{{ @SESSION['email'] }}">
+                    <input id="email" required class="form-control" type="email" name="email" value="{{ @SESSION['email'] }}">
 
                 </label><br>
                 <strong>State</strong><br>
@@ -62,8 +63,7 @@
             <div class="col-sm-6">
                 <div class="container">
                     <strong>Biography</strong><br>
-                    <textarea name="bio" id="bio" cols="40" rows="10">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec blandit lorem. Aenean sed lectus et lectus feugiat condimentum. Praesent in vulputate neque, in pharetra sem. Praesent sit amet ex convallis, egestas ex et, tristique mi. Donec orci magna, semper sit amet nunc a, auctor tempus lorem. Vestibulum quis magna nec elit aliquet laoreet. Aenean et commodo felis. In non elit viverra, tempor nulla in, rhoncus ligula. Duis ut purus et tortor auctor consequat. Cras nec turpis elementum tortor feugiat tincidunt et non ex. </textarea>
+                    <textarea name="bio" id="bio" cols="40" rows="10">{{@SESSION.bio}}</textarea>
                 </div>
             </div>
         </div> <!-- end row#1 -->

@@ -3,7 +3,8 @@
 <!-- IT 328 Full Stack Web Development -->
 <!-- Dating II-b Assignment -->
 <!-- file: views/perinfo.html -->
-<!-- date: Wednesday 8 2019 -->
+<!-- date: Saturday 11 2019 -->
+<!-- version: 2.0 -->
 <html lang="en">
 <head>
      <meta charset="UTF-8">
@@ -33,21 +34,21 @@
                <div class="col-sm-8">
                     <strong>First Name</strong><br>
                     <label class="form-control-label" >
-                         <input id="fname" class="form-control" type="text" name="fname" value="{{ @SESSION['fname'] }}">
+                         <input id="fname" required class="form-control" type="text" name="fname" value="{{ @SESSION['fname'] }}">
                          <check if="{{ @errors['fname'] }}">
                               <span class="err">{{ @errors['fname'] }}</span>
                          </check>
                     </label><br>
                     <strong>Last Name</strong><br>
                     <label class="form-control-label" >
-                         <input id="lname" class="form-control" type="text" name="lname" value="{{ @SESSION['lname'] }}">
+                         <input id="lname" required class="form-control" type="text" name="lname" value="{{ @SESSION['lname'] }}">
                          <check if="{{ @errors['lname'] }}">
                               <span class="err">{{ @errors['lname'] }}</span>
                          </check>
                     </label><br>
                     <strong>Age</strong><br>
                     <label class="form-control-label" >
-                         <input id="age" class="form-control" type="text" name="age" value="{{ @SESSION['age'] }}">
+                         <input id="age" required class="form-control" type="text" name="age" value="{{ @SESSION['age'] }}">
                          <check if="{{ @errors['age'] }}">
                               <span class="err">{{ @errors['age'] }}</span>
                          </check>
@@ -67,7 +68,7 @@
                     </p>
                     <strong>Phone Number</strong><br>
                     <label>
-                         <input id="phone" class="form-control" type="tel" name="phone" value="{{ @SESSION['phone'] }}"><br>
+                         <input id="phone" required class="form-control" type="tel" name="phone" value="{{ @SESSION['phone'] }}"><br>
                     </label>
                </div> <!-- end row#1 col one-->
                <div class="col-sm-4">

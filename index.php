@@ -2,19 +2,37 @@
 /* Bruce Turner, Professor Ostrander, Spring 2019
  * IT 328 Full Stack Web Development
  * Dating IIb Assignment: with form validation & sticky forms
- * file: index.php  --> default landing page, defines various routes
- * date: Thursday, May 9 2019
+ * file: index.php  is the default landing page, defines various routes
+ * date: Saturday, May 11 2019
 */
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-//Start a session
-session_start();//Require autoloads
+
+//Require auto-loads
 require_once('vendor/autoload.php');
 require_once('model/validation-functions.php');
 
+//Start a session
+session_start();
+
 $f3 = Base::instance();
-$f3->set('DEBUG',3);
+/*
+//Turn on Fat-Free error reporting
+set_exception_handler(function($obj) use($f3){
+    $f3->error(500,$obj->getmessage(),$obj->gettrace());
+});
+set_error_handler(function($code,$text) use($f3)
+{
+    if (error_reporting())
+    {
+        $f3->error(500,$text);
+    }
+});
+*/
+$f3->set('DEBUG', 3);
+
+
 $f3->set('genders', array('Male', 'Female'));
 $f3->set('seekSexs', array('Male', 'Female'));
 /* Establish our data structures */
@@ -32,22 +50,22 @@ $f3->set('states_ABBR', array('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'F
     'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA',
     'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ));
 
-$f3->set('outInt', array('hiking', 'walking', 'biking', 'climbing', 'swimming', 'collecting'));
-$f3->set('inInt', array('tv', 'puzzles', 'movies', 'reading', 'cooking', 'playing cards', 'board games', 'video games'));
+$f3->set('outdoorInterests', array('hiking', 'walking', 'biking', 'climbing', 'swimming', 'collecting'));
+$f3->set('indoorInterests', array('tv', 'puzzles', 'movies', 'reading', 'cooking', 'playing cards', 'board games', 'video games'));
 
 //Define a default route
 $f3->route('GET /', function(){
-    //dont want any lingering session information
+    //don't want any lingering session information
     $_SESSION = array();
 
-    //display landing page Template, which posts to personal information
+    //display landing page Template, which POSTS to personal information
     $view = new Template();
     echo $view->render('views/home.html');
 
 });
 //Define a personal information route
 $f3->route('GET|POST /perinfo', function($f3) {
-    //Display personal information, upon completion posts to profile
+    //Display personal information, upon completion REROUTES to profile
     //If form has been submitted, validate
     if(!empty($_POST)) {
         //Get data from form
@@ -75,76 +93,124 @@ $f3->route('GET|POST /perinfo', function($f3) {
             $f3->reroute('/profile');
         }
     }
+    //Display personal information, until REROUTED to  profile in above
     $view = new Template();
     echo $view->render('views/perinfo.html');
 });
 
 //Define a profile route
 $f3->route('GET|POST /profile', function($f3) {
-    //Display profile information, upon completion posts to interests
+    //Display profile information, upon completion REROUTES to interests
     //If form has been submitted, validate
     if(!empty($_POST)) {
         //Get data from form
         $email = $_POST['email'];
         $resState = $_POST['resState'];
-        $seekSex= $_POST['seekSex'];
+        $seekSex = $_POST['seekSex'];
+        $bio = $_POST['bio'];
 
         //Add data to hive
         $f3->set('email', $email);
         $f3->set('resState', $resState);
         $f3->set('seekSex', $seekSex);
-        //echo "<br/>";
-        //print_r($_POST);
-        echo "<br>".validEmail($f3->get('email')."<br>");
+        $f3->set('bio', $bio);
+
+        //echo "<br>".validEmail($f3->get('email')."<br>");
 
         if (validProfileForm()) {
-
             //Write data to Session
             $_SESSION['email'] = $_POST['email'];
             $_SESSION['resState'] = $_POST['resState'];
             $_SESSION['seekSex'] = $_POST['seekSex'];
+            $_SESSION['bio'] = $_POST['bio'];
 
             $f3->reroute('/interests');
         }
     }
-    //Display profile, which posts to interests
+    //Display profile, until REROUTED to  interests in above
     $view = new Template();
     echo $view->render('views/profile.html');
 });
 
 //Define a interests route
-$f3->route('GET|POST /interests', function() {
+$f3->route('GET|POST /interests', function($f3) {
+    $_SESSION['indoor'] = array();
+    $_SESSION['outdoor'] = array();
 
-    //save the data gathered in profile
-    $_SESSION['email'] = $_POST['email'];
-    $_SESSION['resState'] = $_POST['resState'];
-    $_SESSION['biography'] = $_POST['bio'];
-    $_SESSION['seekSex'] = $_POST['seekSex'];
-    //print_r($_SESSION);
+    if(!empty($_POST)) {
+        //Display interests, until REROUTED to summary
+        //Get data from form
+        $indoor = $_POST['indoor'];
+        $outdoor = $_POST['outdoor'];
+        //Add data to hive
+        $f3->set('indoor', $indoor);
+        $f3->set('outdoor', $outdoor);
 
-    //Display interests, which posts to summary
+        if (validInterestsForm()) {
+            //Write data to Session
+            $_SESSION['indoor'] = $_POST['indoor'];
+            $_SESSION['outdoor'] = $_POST['outdoor'];
+            $f3->reroute('/summary');
+        }
+    }
     $view = new Template();
     echo $view->render('views/interests.html');
 });
 
 //Define a summary route
-$f3->route('GET|POST /summary', function() {
-
+$f3->route('GET|POST /summary', function($f3) {
+    /*
+     * want to pause here and ensure that we have not been spoofed with indoor & outdoor interests arrays
+     */
     //save the data gathered in interests
     $indoor = $_POST['indoor'];
-    if(isset($_SESSION['indoor_interests']))
-    {
-        $_SESSION['indoor_interests'] = implode(", ", $indoor);
+    $freshIndoor = array();
+    $numElements = count($indoor);
+    $ctr = -1;
+    for ($i = 0; $i < $numElements; $i++) {
+        if(validIndoor($indoor[$i]))
+        {
+            $ctr++;
+            $freshIndoor[$ctr] = $indoor[$i];
+        }
+        else{
+            //skip it
+        }
     }
-
+    $f3->set('indoor', $freshIndoor);
+    $_SESSION['indoor'] = $freshIndoor;
 
     $outdoor = $_POST['outdoor'];
-    if(isset($_SESSION['outdoor_interests']))
+    $freshOutdoor = array();
+    $numElements = count($outdoor);
+    $ctr = -1;
+    for ($i = 0; $i < $numElements; $i++) {
+        if(validOutdoor($outdoor[$i]))
+        {
+            $ctr++;
+            $freshOutdoor[$ctr] = $outdoor[$i];
+        }
+        else{
+            //skip it
+        }
+    }
+    $f3->set('outdoor', $freshOutdoor);
+    $_SESSION['outdoor'] = $freshOutdoor;
+    print_r($_SESSION['indoor']);
+    echo "<br>";
+    print_r($_SESSION['outdoor']);
+    //we have the two sets of allowable indoor and outdoor interests available in
+    //indoorInterests and outdoorInterests.
+
+    if(isset($_SESSION['indoor']))
     {
-        $_SESSION['outdoor_interests'] = implode(", ", $outdoor);
+        $_SESSION['indoor'] = implode(", ", $freshIndoor);
     }
 
-    //print_r($_SESSION);
+    if(isset($_SESSION['outdoor']))
+    {
+        $_SESSION['outdoor'] = implode(", ", $freshOutdoor);
+    }
 
     //Display summary, which concludes Dating II
     $view = new Template();
